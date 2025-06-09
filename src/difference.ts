@@ -21,6 +21,7 @@ export const difference = <K, V>(
   const ranges: Range.T<K, V>[] = []
   let i = 0
   let j = 0
+  const { key } = rangeSet
 
   // Process each original range
   while (i < rangeSet.ranges.length) {
@@ -30,11 +31,11 @@ export const difference = <K, V>(
     let k = j
 
     // Process overlapping subtraction ranges
-    while (k < ys.length && ys[k].start < rangeSet.key.next(x.end)) {
+    while (k < ys.length && ys[k].start < key.next(x.end)) {
       const y = ys[k]
 
       // Skip if subtraction range is entirely before current range
-      if (rangeSet.key.next(y.end) <= x.start) {
+      if (key.next(y.end) <= x.start) {
         k++
         continue
       }
@@ -44,12 +45,12 @@ export const difference = <K, V>(
         ranges.push({
           ...x,
           start: x.start,
-          end: rangeSet.key.prev(y.start)
+          end: key.prev(y.start)
         })
       }
 
       // Skip the overlapping part by moving x's start past y's end
-      x.start = rangeSet.key.next(y.end)
+      x.start = key.next(y.end)
 
       // If nothing remains of x, stop processing
       if (x.start > x.end) {

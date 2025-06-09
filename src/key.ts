@@ -24,6 +24,12 @@ export type Key<T> = {
 
 export type { Key as T }
 
+/** @returns minimum of a and b */
+export const min = <T>(key: Key<T>, a: T, b: T): T => (key.cmp(a, b) < 0 ? a : b)
+
+/** @returns maximum of a and b */
+export const max = <T>(key: Key<T>, a: T, b: T): T => (key.cmp(a, b) > 0 ? a : b)
+
 /**
  * Key operations for closed intervals with integer boundaries.
  * In closed intervals, both start and end boundaries are inclusive.

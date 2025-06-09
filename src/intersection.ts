@@ -1,5 +1,6 @@
 import * as RangeSet from './range-set.js'
 import * as Range from './range.js'
+import * as Key from './key.js'
 
 /**
  * Computes the intersection of two range sets, finding overlapping portions.
@@ -21,16 +22,17 @@ export const intersection = <K, V>(
   const ranges: Range.T<K, V>[] = []
   let i = 0
   let j = 0
+  const { key } = rangeSet
 
   while (i < rangeSet.ranges.length && j < otherRangeSet.ranges.length) {
     const x = rangeSet.ranges[i]
     const y = otherRangeSet.ranges[j]
 
-    const effectiveXEnd = rangeSet.key.next(x.end)
-    const effectiveYEnd = rangeSet.key.next(y.end)
+    const xEndNext = key.next(x.end)
+    const yEndNext = key.next(y.end)
 
-    const start = rangeSet.key.cmp(x.start, y.start) > 0 ? x.start : y.start
-    const end = rangeSet.key.cmp(effectiveXEnd, effectiveYEnd) < 0 ? effectiveXEnd : effectiveYEnd
+    const start = Key.max(key, x.start, y.start)
+    const end = Key.min(key, xEndNext, yEndNext)
 
     if (start < end) {
       ranges.push({
@@ -40,7 +42,7 @@ export const intersection = <K, V>(
       })
     }
 
-    if (effectiveXEnd < effectiveYEnd) {
+    if (xEndNext < yEndNext) {
       i++
     } else {
       j++
